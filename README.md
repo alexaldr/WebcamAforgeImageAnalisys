@@ -31,7 +31,7 @@ O projeto original, com o tutorial de como acessar a webcam utilizando o Framewo
 
 ## Site da API Microsoft Azure Cognitive Services
 
-[![](https://devrainsolutionscdn.azureedge.net/devrain/cc39fbf6-7690-4755-a238-00bedea559cf.png "Microsoft Azure Cognitive Services")](https://azure.microsoft.com/pt-br/services/cognitive-services/face/)
+[![](https://blog.arkanosoft.com/wp-content/uploads/2016/09/azure-cognitive-services.png "Microsoft Azure Cognitive Services")](https://azure.microsoft.com/pt-br/services/cognitive-services/face/)
 
 ## Site da biblioteca AForge.NET
 
