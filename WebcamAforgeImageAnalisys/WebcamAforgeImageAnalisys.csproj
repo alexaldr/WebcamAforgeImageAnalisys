@@ -114,6 +114,7 @@
     <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -125,6 +126,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Azure.cs" />
+    <Compile Include="FrmGraph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmGraph.Designer.cs">
+      <DependentUpon>FrmGraph.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmScreenshot.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -139,6 +146,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FrmGraph.resx">
+      <DependentUpon>FrmGraph.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmScreenshot.resx">
       <DependentUpon>FrmScreenshot.cs</DependentUpon>
     </EmbeddedResource>

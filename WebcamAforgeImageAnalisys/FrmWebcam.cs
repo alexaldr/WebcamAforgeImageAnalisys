@@ -134,13 +134,13 @@ namespace WebcamAforgeImageAnalisys
             DateTime now = DateTime.Now;
             Graphics gDateTime = Graphics.FromImage(image);
             Graphics gFps = Graphics.FromImage(image);
-            SolidBrush brush = new SolidBrush(System.Drawing.Color.Red);
+            SolidBrush brush = new SolidBrush(System.Drawing.Color.LightGreen);
             // show date and time
-            //Font font = new Font(FontFamily.GenericMonospace, videoSource.VideoResolution.FrameSize.Width / 50);
-            gDateTime.DrawString(now.ToString(), Font, brush, new PointF(5, 5));
-            brush.Color = System.Drawing.Color.Yellow;
-            gFps.DrawString(fps.ToString("F0") + " fps", Font, brush,
-                            new PointF(videoSource.VideoResolution.FrameSize.Width-100, 5));
+            Font font = new Font(FontFamily.GenericMonospace, videoSource.VideoResolution.FrameSize.Width*2/100,FontStyle.Bold);
+            gDateTime.DrawString($"{now.ToString()} - {fps.ToString("F0")}", font, brush, new PointF(5, 5));
+            //brush.Color = System.Drawing.Color.Green;
+            //gFps.DrawString(fps.ToString("F0") + " fps",font, brush,
+            //                new PointF(videoSource.VideoResolution.FrameSize.Width-100, 5));
             brush.Dispose();
             gDateTime.Dispose();
             gFps.Dispose();

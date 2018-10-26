@@ -46,21 +46,25 @@
             // 
             // pbScreenshot
             // 
+            this.pbScreenshot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pbScreenshot.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pbScreenshot.Location = new System.Drawing.Point(16, 15);
             this.pbScreenshot.Margin = new System.Windows.Forms.Padding(4);
+            this.pbScreenshot.MaximumSize = new System.Drawing.Size(854, 480);
             this.pbScreenshot.Name = "pbScreenshot";
-            this.pbScreenshot.Size = new System.Drawing.Size(853, 443);
-            this.pbScreenshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbScreenshot.Size = new System.Drawing.Size(854, 480);
+            this.pbScreenshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pbScreenshot.TabIndex = 0;
             this.pbScreenshot.TabStop = false;
+            this.pbScreenshot.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pbScreenshot_MouseClick);
             // 
             // btnExecute
             // 
             this.btnExecute.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnExecute.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExecute.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnExecute.Location = new System.Drawing.Point(722, 467);
+            this.btnExecute.Location = new System.Drawing.Point(721, 504);
             this.btnExecute.Margin = new System.Windows.Forms.Padding(4);
             this.btnExecute.Name = "btnExecute";
             this.btnExecute.Size = new System.Drawing.Size(147, 35);
@@ -76,7 +80,7 @@
             this.groupBox1.Controls.Add(this.rbMicrosoftAnalisys);
             this.groupBox1.Controls.Add(this.rbGoogleAnalisys);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(17, 466);
+            this.groupBox1.Location = new System.Drawing.Point(16, 503);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
@@ -129,7 +133,7 @@
             // 
             // pbSelectedOption
             // 
-            this.pbSelectedOption.Location = new System.Drawing.Point(256, 467);
+            this.pbSelectedOption.Location = new System.Drawing.Point(255, 504);
             this.pbSelectedOption.Name = "pbSelectedOption";
             this.pbSelectedOption.Size = new System.Drawing.Size(115, 115);
             this.pbSelectedOption.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -139,7 +143,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(722, 506);
+            this.button1.Location = new System.Drawing.Point(721, 543);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(147, 35);
@@ -151,7 +155,7 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(722, 546);
+            this.button2.Location = new System.Drawing.Point(721, 583);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(147, 35);
@@ -163,7 +167,7 @@
             // txtInformation
             // 
             this.txtInformation.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.txtInformation.Location = new System.Drawing.Point(377, 467);
+            this.txtInformation.Location = new System.Drawing.Point(376, 504);
             this.txtInformation.Multiline = true;
             this.txtInformation.Name = "txtInformation";
             this.txtInformation.ReadOnly = true;
@@ -174,7 +178,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(885, 594);
+            this.ClientSize = new System.Drawing.Size(885, 634);
             this.Controls.Add(this.txtInformation);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -189,9 +193,10 @@
             this.MaximizeBox = false;
             this.Name = "FrmScreenshot";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Webcam Aforge - Image Analisys";
+            this.Text = "Webcam Aforge - Image Analisys: Screenshot";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmScreenshot_FormClosing);
             this.Load += new System.EventHandler(this.FrmScreenshot_Load);
+            this.Shown += new System.EventHandler(this.FrmScreenshot_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pbScreenshot)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
