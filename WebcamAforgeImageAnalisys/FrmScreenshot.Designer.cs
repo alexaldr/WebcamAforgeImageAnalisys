@@ -54,7 +54,7 @@
             this.pbScreenshot.MaximumSize = new System.Drawing.Size(854, 480);
             this.pbScreenshot.Name = "pbScreenshot";
             this.pbScreenshot.Size = new System.Drawing.Size(854, 480);
-            this.pbScreenshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pbScreenshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbScreenshot.TabIndex = 0;
             this.pbScreenshot.TabStop = false;
             this.pbScreenshot.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pbScreenshot_MouseClick);
@@ -87,7 +87,7 @@
             this.groupBox1.Size = new System.Drawing.Size(232, 115);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Opções de Captura";
+            this.groupBox1.Text = "Opções";
             // 
             // rbLocalSaveImage
             // 
@@ -96,10 +96,10 @@
             this.rbLocalSaveImage.Location = new System.Drawing.Point(9, 83);
             this.rbLocalSaveImage.Margin = new System.Windows.Forms.Padding(4);
             this.rbLocalSaveImage.Name = "rbLocalSaveImage";
-            this.rbLocalSaveImage.Size = new System.Drawing.Size(187, 21);
+            this.rbLocalSaveImage.Size = new System.Drawing.Size(119, 21);
             this.rbLocalSaveImage.TabIndex = 2;
             this.rbLocalSaveImage.TabStop = true;
-            this.rbLocalSaveImage.Text = "Salvar imagem capturada";
+            this.rbLocalSaveImage.Text = "Salvar imagem";
             this.rbLocalSaveImage.UseVisualStyleBackColor = true;
             this.rbLocalSaveImage.CheckedChanged += new System.EventHandler(this.rbLocalSaveImage_CheckedChanged);
             // 
@@ -121,7 +121,7 @@
             // 
             this.rbGoogleAnalisys.AutoSize = true;
             this.rbGoogleAnalisys.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbGoogleAnalisys.Location = new System.Drawing.Point(9, 25);
+            this.rbGoogleAnalisys.Location = new System.Drawing.Point(8, 24);
             this.rbGoogleAnalisys.Margin = new System.Windows.Forms.Padding(4);
             this.rbGoogleAnalisys.Name = "rbGoogleAnalisys";
             this.rbGoogleAnalisys.Size = new System.Drawing.Size(211, 21);
@@ -143,7 +143,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(721, 543);
+            this.button1.Location = new System.Drawing.Point(721, 586);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(147, 35);
@@ -155,12 +155,12 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(721, 583);
+            this.button2.Location = new System.Drawing.Point(721, 543);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(147, 35);
             this.button2.TabIndex = 5;
-            this.button2.Text = "Sair";
+            this.button2.Text = "Imagem do arquivo";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -178,7 +178,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(885, 634);
+            this.ClientSize = new System.Drawing.Size(885, 706);
             this.Controls.Add(this.txtInformation);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);

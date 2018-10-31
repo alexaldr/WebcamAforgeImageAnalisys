@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Windows.Forms;
 using Google.Cloud.Vision.V1;
+using Newtonsoft.Json;
 
 namespace WebcamAforgeImageAnalisys
 {
@@ -23,8 +24,10 @@ namespace WebcamAforgeImageAnalisys
         private SaveFileDialog saveFileDialog;
         private frmWebcam frmcam;
         private static string subscriptionKey;
-        private static string uriBase = "https://brazilsouth.api.cognitive.microsoft.com/face/v1.0/analyze";
-        static List<Response> retorno = new List<Response>();
+        private static string uri = "https://brazilsouth.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=gender,emotion,age";
+        static List<ResponseGoogle> retornoGoogle = new List<ResponseGoogle>();
+        static List<ResponseMicrosoftAzure> retornoMicrosoft = new List<ResponseMicrosoftAzure>();
+
 
         public FrmScreenshot(Bitmap img, object sender)
         {
@@ -101,9 +104,9 @@ namespace WebcamAforgeImageAnalisys
             //Analisys by Google Cloud
             if (rbGoogleAnalisys.Checked)
             {
-                retorno.Clear();
+                retornoGoogle.Clear();
                 mouse_busy(true);
-                rbMicrosoftAnalisys.Enabled = false;
+                //rbMicrosoftAnalisys.Enabled = false;
                 try
                 {
                     lock (this)
@@ -178,11 +181,11 @@ namespace WebcamAforgeImageAnalisys
                             //MessageBox.Show(face.Landmarks.ToString());
 
 
-                            Response current = null;
-                            current = new Response
+                            ResponseGoogle current = null;
+                            current = new ResponseGoogle
                             {
                                 face = count,
-                                Confianca= face.DetectionConfidence,
+                                Confianca = face.DetectionConfidence,
                                 DownRightPoint = new Point(face.FdBoundingPoly.Vertices[2].X, face.FdBoundingPoly.Vertices[2].Y),
                                 UpLeftPoint = new Point(face.FdBoundingPoly.Vertices[0].X, face.FdBoundingPoly.Vertices[0].Y),
                                 Alegria = StringResponseToInt(face.JoyLikelihood.ToString()),
@@ -193,13 +196,13 @@ namespace WebcamAforgeImageAnalisys
                                 Chapeu = StringResponseToInt(face.HeadwearLikelihood.ToString()),
                                 AnguloHorizontal = face.PanAngle.ToString(),
                                 AnguloRotacao = face.TiltAngle.ToString(),
-                                AnguloVertical  = face.RollAngle.ToString()
+                                AnguloVertical = face.RollAngle.ToString()
                             };
 
                             //current.UserSetField1 = field1;
 
                             //add to global list
-                            retorno.Add(current);
+                            retornoGoogle.Add(current);
                             //MessageBox.Show("Alegria:"+ face.JoyLikelihood.ToString(), "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 
@@ -224,13 +227,50 @@ namespace WebcamAforgeImageAnalisys
             //Analisys by Microsoft Azure
             if (rbMicrosoftAnalisys.Checked)
             {
+                mouse_busy(true);
+                retornoMicrosoft.Clear();
                 pbScreenshot.Image.Save(@".\detection.jpg", ImageFormat.Jpeg);
                 //var image = System.Drawing.Image.FromFile(@".\detection.jpg");
                 subscriptionKey = File.ReadAllText(@"C:\ApiKeys\WebcamAforgeAzure.txt");
-                MakeAnalysisRequest(@".\detection.jpg").Wait();
+                //MakeAnalysisRequest(@".\detection.jpg").Wait();
+
+                MakeRequest(@".\detection.jpg");
+
+                mouse_busy(false);
+                MessageBox.Show("Imagem analisada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                try
+                {
+                    int count = 0;
+                    foreach (ResponseMicrosoftAzure r in retornoMicrosoft)
+                    {
+                        Graphics g;
+                        SolidBrush brush = new SolidBrush(System.Drawing.Color.Red);
+                        Font font = new Font(FontFamily.GenericMonospace, pbScreenshot.Image.Width * 2 / 100, FontStyle.Bold);
+                        g = Graphics.FromImage(screenshot);
+                        Pen pen = new Pen(brush, 4.0f);
+                        g.DrawRectangle(pen, r.faceRectangle.left, r.faceRectangle.top, r.faceRectangle.width, r.faceRectangle.height);
+                        g.DrawString($"Face \"{count + 1}\"", font, brush,
+                                                            r.faceRectangle.left,
+                                                            r.faceRectangle.top + r.faceRectangle.height + 5);
+
+                        pbScreenshot.Image = screenshot;
+                        g.Dispose();
+                        count++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Falha ao desenhar local da face!\n" + ex.Message, "Erro!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    //nothing yet
+                }
             }
         }
 
+        //Google return conversion to int
         private int StringResponseToInt(string value)
         {
             switch (value)
@@ -272,62 +312,84 @@ namespace WebcamAforgeImageAnalisys
             return 0;
         }
 
-        ///Assinc Azure request
-        private static async Task MakeAnalysisRequest(string imageFilePath)
+        //
+        static byte[] GetImageAsByteArray(string imageFilePath)
         {
-            try
-            {
-                HttpClient client = new HttpClient();
-                // Request headers.
-                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
-                // Request parameters. A third optional parameter is "details".
-                string requestParameters = "visualFeatures=Categories,Description,Color";
-                // Assemble the URI for the REST API Call.
-                string uri = uriBase + "?" + requestParameters;
-
-                HttpResponseMessage response;
-                // Request body. Posts a locally stored JPEG image.
-                byte[] byteData = GetImageAsByteArray(imageFilePath);
-
-                using (ByteArrayContent content = new ByteArrayContent(byteData))
-                {
-                    // This example uses content type "application/octet-stream".
-                    // The other content types you can use are "application/json"
-                    // and "multipart/form-data".
-                    content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                    // Make the REST API call.
-                    response = await client.PostAsync(uri, content);
-                }
-                // Get the JSON response.
-                string contentString = await response.Content.ReadAsStringAsync();
-                // Display the JSON response.
-                Console.WriteLine("\nResponse:\n\n{0}\n", JToken.Parse(contentString).ToString());
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("\n" + e.Message);
-            }
+            FileStream fileStream = new FileStream(imageFilePath, FileMode.Open, FileAccess.Read);
+            BinaryReader binaryReader = new BinaryReader(fileStream);
+            return binaryReader.ReadBytes((int)fileStream.Length);
         }
 
-        //returns The byte array of the image data
-        private static byte[] GetImageAsByteArray(string imageFilePath)
+        static async void MakeRequest(string imageFilePath)//static async void MakeRequest(string imageFilePath)
         {
-            try
+            var client = new HttpClient();
+
+            // Request headers - replace this example key with your valid key.
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey); //
+
+            // NOTE: You must use the same region in your REST call as you used to obtain your subscription keys.
+            //   For example, if you obtained your subscription keys from westcentralus, replace "westus" in the
+            //   URI below with "westcentralus".
+            //string uri = "https://brazilsouth.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=gender,emotion";
+            HttpResponseMessage response;
+            string responseContent;
+
+            // Request body. Try this sample with a locally stored JPEG image.
+            byte[] byteData = GetImageAsByteArray(imageFilePath);
+
+            using (var content = new ByteArrayContent(byteData))
             {
-                using (FileStream fileStream = new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
-                {
-                    BinaryReader binaryReader = new BinaryReader(fileStream);
-                    return binaryReader.ReadBytes((int)fileStream.Length);
-                }
+                // This example uses content type "application/octet-stream".
+                // The other content types you can use are "application/json" and "multipart/form-data".
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                response = await client.PostAsync(uri, content);//response = await client.PostAsync(uri, content);
+                //MessageBox.Show("StatusCode: " + response.StatusCode, "StatusCode HTTP Request" ,MessageBoxButtons.OK, MessageBoxIcon.Error);
+                responseContent = response.Content.ReadAsStringAsync().Result;
+                //MessageBox.Show("Response: \n" + responseContent, "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.IO.File.WriteAllText(@"d:\Desktop\responsecontentALLText.txt", responseContent);
+
             }
-            catch (Exception e)
-            {
-                MessageBox.Show("\n" + e.Message);
-                return null;
-            }
+            //MessageBox.Show("Response: \n" + responseContent, "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            retornoMicrosoft = JsonConvert.DeserializeObject<List<ResponseMicrosoftAzure>>(responseContent);
+            MessageBox.Show("Response: \n" + retornoMicrosoft.ToString(), "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+
+
+
+
+
+            // A peek at the raw JSON response.
+            //Console.WriteLine(responseContent);
+            // Processing the JSON into manageable objects.
+            //JToken rootToken = JArray.Parse(responseContent).First;
+            //JToken rootToken = JObject.Parse(responseContent).First;
+
+            // First token is always the faceRectangle identified by the API.
+            //JToken faceRectangleToken = rootToken.First;
+
+            // Second token is all emotion scores.
+            //JToken scoresToken = rootToken.Last;
+
+            // Show all face rectangle dimensions
+            //int count = 0;
+            //JEnumerable<JToken> faceRectangleSizeList = faceRectangleToken.First.Children();
+            //foreach (var size in faceRectangleSizeList)
+            //{
+            //    count++;
+            //    MessageBox.Show($"Size{count}: {size}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //    Console.WriteLine(size);
+            //}
+
+            //// Show all scores
+            //count = 0;
+            //JEnumerable<JToken> scoreList = scoresToken.First.Children();
+            //foreach (var score in scoreList)
+            //{
+            //    count++;
+            //    MessageBox.Show($"Score{count}: {score}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //    Console.WriteLine(score);
+            //}
         }
-
-
 
 
         private void FrmScreenshot_FormClosing(object sender, FormClosingEventArgs e)
@@ -389,13 +451,52 @@ namespace WebcamAforgeImageAnalisys
             //Point mousePoint = new Point(MousePosition.X, MousePosition.Y);
             //853; 443;
 
-            Point mousePoint = new Point(e.X, e.Y);
+            //Point mousePoint = unscaled_p; //new Point(e.X, e.Y);
 
             //MessageBox.Show($"Coordenadas: X:{e.X}, Y:{e.Y}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             //MessageBox.Show($"HorizontalResolution:{pbScreenshot.Image.Width})", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (rbGoogleAnalisys.Checked)
+            {
+                GoogleImageSquareClick(e);
+            }
+            else if (rbMicrosoftAnalisys.Checked)
+            {
+                MicrosoftImageSquareClick(e);
+            }
 
 
-            foreach (Response r in retorno)
+        }
+
+        private void MicrosoftImageSquareClick(MouseEventArgs e)
+        {
+            Point p = new Point(e.X, e.Y); // pbScreenshot.PointToClient(Cursor.Position);
+            Point mousePoint = ScaleClickPoint(p);
+
+            foreach (ResponseMicrosoftAzure r in retornoMicrosoft)
+            {
+                if (mousePoint.X >= r.faceRectangle.left && mousePoint.X <= (r.faceRectangle.left + r.faceRectangle.width))
+                {
+                    if (mousePoint.Y >= r.faceRectangle.top && mousePoint.Y <= (r.faceRectangle.top + r.faceRectangle.height))
+                    {
+                        MessageBox.Show("clicou na caixa", "Sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        FrmGraph frmGraph = new FrmGraph(retornoMicrosoft, screenshot);
+                        //frmGraph.Modal = true;
+                        frmGraph.ShowDialog();
+                    }
+
+                }
+            }
+        }
+
+
+
+        private void GoogleImageSquareClick(MouseEventArgs e)
+        {
+            Point p = new Point(e.X, e.Y); // pbScreenshot.PointToClient(Cursor.Position);
+
+            Point mousePoint = ScaleClickPoint(p);
+
+            foreach (ResponseGoogle r in retornoGoogle)
             {
                 if (mousePoint.X <= r.DownRightPoint.X && mousePoint.X >= r.UpLeftPoint.X)
                 {
@@ -417,13 +518,48 @@ namespace WebcamAforgeImageAnalisys
 
                 }
             }
+        }
 
+        private Point ScaleClickPoint(Point p)
+        {
+            Point scaled_p = new Point();
 
+            // image and container dimensions
+            int w_i = pbScreenshot.Image.Width;
+            int h_i = pbScreenshot.Image.Height;
+            int w_c = pbScreenshot.Width;
+            int h_c = pbScreenshot.Height;
+
+            float imageRatio = w_i / (float)h_i; // image W:H ratio
+            float containerRatio = w_c / (float)h_c; // container W:H ratio
+
+            if (imageRatio >= containerRatio)
+            {
+                // horizontal image
+                float scaleFactor = w_c / (float)w_i;
+                float scaledHeight = h_i * scaleFactor;
+                // calculate gap between top of container and top of image
+                float filler = Math.Abs(h_c - scaledHeight) / 2;
+                scaled_p.X = (int)(p.X / scaleFactor);
+                scaled_p.Y = (int)((p.Y - filler) / scaleFactor);
+            }
+            else
+            {
+                // vertical image
+                float scaleFactor = h_c / (float)h_i;
+                float scaledWidth = w_i * scaleFactor;
+                float filler = Math.Abs(w_c - scaledWidth) / 2;
+                scaled_p.X = (int)((p.X - filler) / scaleFactor);
+                scaled_p.Y = (int)(p.Y / scaleFactor);
+            }
+
+            return scaled_p;
         }
 
         private void FrmScreenshot_Shown(object sender, EventArgs e)
         {
-            pbScreenshot.Location = new Point((FrmScreenshot.ActiveForm.Width - pbScreenshot.Size.Width) / 2, pbScreenshot.Location.Y);
+            //pbScreenshot.Size = new Size(pbScreenshot.Image.Size.Width, pbScreenshot.Image.Size.Height);
+            //pbScreenshot.Location = new Point((FrmScreenshot.ActiveForm.Width - pbScreenshot.Size.Width) / 2, pbScreenshot.Location.Y);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -434,7 +570,7 @@ namespace WebcamAforgeImageAnalisys
         }
     }
 
-    internal class Response
+    public class ResponseGoogle
     {
         public int face { get; set; }
         public Point DownRightPoint { get; set; }
@@ -456,6 +592,79 @@ namespace WebcamAforgeImageAnalisys
         public string AnguloRotacao { get; set; }
     }
 
+    //public class ResponseMicrosoft
+    //{
+    //    public int face { get; set; }
+    //    public Point DownRightPoint { get; set; }
+    //    public Point UpLeftPoint { get; set; }
+    //    //"left": 68
+    //    //"top": 97
+    //    //"width": 64
+    //    //"height": 97
+
+    //    //"scores": 
+    //    public float Anger { get; set; }
+    //    public float Contempt { get; set; }
+    //    public float Disgust { get; set; }
+    //    public float Fear { get; set; }
+    //    public float Happiness { get; set; }
+    //    public float Neutral { get; set; }
+    //    public float Sadness { get; set; }
+    //    public float Surprise { get; set; }
+    //}
+
+
+    public class ResponseMicrosoftAzure
+    {
+        public string faceId { get; set; }
+        public FaceRectangle faceRectangle { get; set; }
+        public FaceAttributes faceAttributes { get; set; }
+        //public FaceLandmarks faceLandmarks { get; set; }
+    }
+    public class FaceAttributes
+    {
+        public FaceEmotion emotion { get; set; }
+        public string gender { get; set; }
+        public float age { get; set; }
+    }
+
+    //public class FaceAttributes
+    //{
+    //    public Hair hair { get; set; }
+    //    public double smile { get; set; }
+    //    public HeadPose headPose { get; set; }
+    //    public string gender { get; set; }
+    //    public double age { get; set; }
+    //    public FacialHair facialHair { get; set; }
+    //    public string glasses { get; set; }
+    //    public Makeup makeup { get; set; }
+    //    public Emotion emotion { get; set; }
+    //    public Occlusion occlusion { get; set; }
+    //    public List<Accessory> accessories { get; set; }
+    //    public Blur blur { get; set; }
+    //    public Exposure exposure { get; set; }
+    //    public Noise noise { get; set; }
+    //}
+
+    public class FaceEmotion
+    {
+        public double anger { get; set; }
+        public double contempt { get; set; }
+        public double disgust { get; set; }
+        public double fear { get; set; }
+        public double happiness { get; set; }
+        public double neutral { get; set; }
+        public double sadness { get; set; }
+        public double surprise { get; set; }
+    }
+
+    public class FaceRectangle
+    {
+        public int top { get; set; }
+        public int left { get; set; }
+        public int width { get; set; }
+        public int height { get; set; }
+    }
 
 
 
