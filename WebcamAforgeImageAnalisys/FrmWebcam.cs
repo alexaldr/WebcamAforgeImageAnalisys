@@ -21,6 +21,7 @@ namespace WebcamAforgeImageAnalisys
         private Bitmap imgsave;
         private float fps;
         private VideoCaptureDevice videoSource;
+        private OpenFileDialog openFileDialog;
 
         public frmWebcam()
         {
@@ -136,7 +137,7 @@ namespace WebcamAforgeImageAnalisys
             Graphics gFps = Graphics.FromImage(image);
             SolidBrush brush = new SolidBrush(System.Drawing.Color.LightGreen);
             // show date and time
-            Font font = new Font(FontFamily.GenericMonospace, videoSource.VideoResolution.FrameSize.Width*2/100,FontStyle.Bold);
+            Font font = new Font(FontFamily.GenericMonospace, videoSource.VideoResolution.FrameSize.Width * 2 / 100, FontStyle.Bold);
             gDateTime.DrawString($"{now.ToString()} - {fps.ToString("F0")}", font, brush, new PointF(5, 5));
             //brush.Color = System.Drawing.Color.Green;
             //gFps.DrawString(fps.ToString("F0") + " fps",font, brush,
@@ -148,7 +149,7 @@ namespace WebcamAforgeImageAnalisys
 
         private void btnScreenshot_Click(object sender, EventArgs e)
         {
-            if (vspMainPlayer.IsRunning && vspMainPlayer.GetCurrentVideoFrame()!=null)
+            if (vspMainPlayer.IsRunning && vspMainPlayer.GetCurrentVideoFrame() != null)
             {
                 imgsave = new Bitmap(vspMainPlayer.GetCurrentVideoFrame());
                 this.Hide();
@@ -159,6 +160,41 @@ namespace WebcamAforgeImageAnalisys
             {
                 MessageBox.Show("Falha ao capturar a imagem!\n\nSelecione um dispositivo antes de capturar a imagem!", "Erro!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnLoadFromFile_Click(object sender, EventArgs e)
+        {
+            using (openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Imagens (*.jpg)|*.jpg";
+                openFileDialog.DefaultExt = "*.jpg";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        //lock (this)
+                        //{
+
+                        imgsave = new Bitmap(Image.FromFile(openFileDialog.FileName));
+
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Falha ao carregar a imagem!\n" + ex.Message, "Erro!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Operação cancelada!", "Cancelado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            this.Hide();
+            FrmScreenshot frmScreenshot = new FrmScreenshot(imgsave, this);
+            frmScreenshot.Show();
         }
     }
 }

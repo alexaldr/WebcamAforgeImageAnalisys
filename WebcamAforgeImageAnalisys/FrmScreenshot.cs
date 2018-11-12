@@ -15,13 +15,16 @@ using System.Windows.Forms;
 using Google.Cloud.Vision.V1;
 using Newtonsoft.Json;
 
+
 namespace WebcamAforgeImageAnalisys
 {
 
     public partial class FrmScreenshot : Form
     {
         private Bitmap screenshot, bm;
+        //private Bitmap bm;
         private SaveFileDialog saveFileDialog;
+        private OpenFileDialog openFileDialog;
         private frmWebcam frmcam;
         private static string subscriptionKey;
         private static string uri = "https://brazilsouth.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=gender,emotion,age";
@@ -32,6 +35,8 @@ namespace WebcamAforgeImageAnalisys
         public FrmScreenshot(Bitmap img, object sender)
         {
             screenshot = img;
+            System.IO.File.Delete(@".\retorno.jpg");
+            img.Save(@".\retorno.jpg", ImageFormat.Jpeg);
             frmcam = (frmWebcam)sender;
             InitializeComponent();
             bm = new Bitmap(pbScreenshot.ClientRectangle.Width, pbScreenshot.ClientRectangle.Height);
@@ -39,8 +44,8 @@ namespace WebcamAforgeImageAnalisys
 
         private void FrmScreenshot_Load(object sender, EventArgs e)
         {
-            pbScreenshot.Image = screenshot;
-            rbGoogleAnalisys.Checked = true;
+            pbScreenshot.Image = System.Drawing.Image.FromFile(@".\retorno.jpg");
+            rbMicrosoftAnalisys.Checked = true;
         }
 
 
@@ -229,6 +234,7 @@ namespace WebcamAforgeImageAnalisys
             {
                 mouse_busy(true);
                 retornoMicrosoft.Clear();
+                System.IO.File.Delete(@".\detection.jpg");
                 pbScreenshot.Image.Save(@".\detection.jpg", ImageFormat.Jpeg);
                 //var image = System.Drawing.Image.FromFile(@".\detection.jpg");
                 subscriptionKey = File.ReadAllText(@"C:\ApiKeys\WebcamAforgeAzure.txt");
@@ -351,8 +357,8 @@ namespace WebcamAforgeImageAnalisys
             }
             //MessageBox.Show("Response: \n" + responseContent, "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
             retornoMicrosoft = JsonConvert.DeserializeObject<List<ResponseMicrosoftAzure>>(responseContent);
-            MessageBox.Show("Response: \n" + retornoMicrosoft.ToString(), "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
+            //MessageBox.Show("Response: \n" + retornoMicrosoft.ToString(), "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return true;
 
 
 
@@ -438,12 +444,7 @@ namespace WebcamAforgeImageAnalisys
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Deseja realmente sair?\n\nToda a aplicação será encerrada!",
-                                "Deseja sair?", MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Warning).ToString().ToUpper() == "YES")
-            {
-                Application.Exit();
-            }
+
         }
 
         private void pbScreenshot_MouseClick(object sender, MouseEventArgs e)
@@ -562,12 +563,14 @@ namespace WebcamAforgeImageAnalisys
             //pbScreenshot.Location = new Point((FrmScreenshot.ActiveForm.Width - pbScreenshot.Size.Width) / 2, pbScreenshot.Location.Y);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnImageFromFile_Click(object sender, EventArgs e)
         {
             this.Close();
             //this.Dispose();
             frmcam.Show();
         }
+
+        
     }
 
     public class ResponseGoogle

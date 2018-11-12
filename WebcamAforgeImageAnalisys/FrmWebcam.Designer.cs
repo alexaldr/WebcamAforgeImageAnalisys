@@ -41,6 +41,7 @@
             this.lblCam = new System.Windows.Forms.Label();
             this.btnCamChange = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
+            this.btnLoadFromFile = new System.Windows.Forms.Button();
             this.gbVideoSource.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,6 +60,7 @@
             // 
             // gbVideoSource
             // 
+            this.gbVideoSource.Controls.Add(this.btnLoadFromFile);
             this.gbVideoSource.Controls.Add(this.btnScreenshot);
             this.gbVideoSource.Controls.Add(this.lblFps);
             this.gbVideoSource.Controls.Add(this.lblFpsPrefix);
@@ -77,9 +79,9 @@
             // 
             // btnScreenshot
             // 
-            this.btnScreenshot.Location = new System.Drawing.Point(657, 13);
+            this.btnScreenshot.Location = new System.Drawing.Point(657, 6);
             this.btnScreenshot.Name = "btnScreenshot";
-            this.btnScreenshot.Size = new System.Drawing.Size(185, 51);
+            this.btnScreenshot.Size = new System.Drawing.Size(198, 30);
             this.btnScreenshot.TabIndex = 7;
             this.btnScreenshot.Text = "Tirar Screenshot";
             this.btnScreenshot.UseVisualStyleBackColor = true;
@@ -159,6 +161,16 @@
             this.timer.Interval = 1000;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
+            // btnLoadFromFile
+            // 
+            this.btnLoadFromFile.Location = new System.Drawing.Point(657, 43);
+            this.btnLoadFromFile.Name = "btnLoadFromFile";
+            this.btnLoadFromFile.Size = new System.Drawing.Size(198, 30);
+            this.btnLoadFromFile.TabIndex = 8;
+            this.btnLoadFromFile.Text = "Selecionar do Arquivo";
+            this.btnLoadFromFile.UseVisualStyleBackColor = true;
+            this.btnLoadFromFile.Click += new System.EventHandler(this.btnLoadFromFile_Click);
+            // 
             // frmWebcam
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -191,6 +203,7 @@
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Button btnScreenshot;
         private System.Windows.Forms.TextBox txtResolution;
+        private System.Windows.Forms.Button btnLoadFromFile;
     }
 }
 

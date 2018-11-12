@@ -13,14 +13,22 @@ namespace WebcamAforgeImageAnalisys
 {
     public partial class FrmGraph : Form
     {
-        private static Bitmap face;
+        private static Bitmap face, croppedFace;
         private static List<ResponseMicrosoftAzure> responseMicrosoft;
         private static List<ResponseGoogle> responseGoogle;
 
+        public Bitmap CropBitmap(Bitmap bitmap, int cropX, int cropY, int cropWidth, int cropHeight)
+        {
+            Rectangle rect = new Rectangle(cropX, cropY, cropWidth, cropHeight);
+            Bitmap cropped = bitmap.Clone(rect, bitmap.PixelFormat);
+            return cropped;
+        }
+
         public FrmGraph(List<ResponseMicrosoftAzure> r, Bitmap f)
         {
-            face = f;
             responseMicrosoft = r;
+            face = f;
+
             InitializeComponent();
             MicrosoftAnalysis();
 
@@ -50,6 +58,9 @@ namespace WebcamAforgeImageAnalisys
             {
                 try
                 {
+                    croppedFace = CropBitmap(face, r.faceRectangle.left, r.faceRectangle.top, r.faceRectangle.width, r.faceRectangle.height);
+                    pbFace.Image = croppedFace;
+
                     chart1.Series.Remove(chart1.Series["Series1"]);
 
                     string gender = r.faceAttributes.gender == "male" ? "Masculino" : "Feminino";
@@ -89,10 +100,10 @@ namespace WebcamAforgeImageAnalisys
                         chart1.Series.Add(series[i]);
                         chart1.Series[series[i]].ChartType = SeriesChartType.Column;
                         chart1.Series[series[i]].Points.AddY(pontos[i]);
+                        //chart1.Series[series[i]].Points.AddY(34);
                         chart1.Series[series[i]].ChartArea = "ChartArea1";
 
-
-
+                        //chart1.Series[series[i]].Legend = series[i];
                         //titles
                         //Series serie = chart1.Series.Add(series[i]);
                         ////values
