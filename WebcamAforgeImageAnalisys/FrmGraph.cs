@@ -92,16 +92,31 @@ namespace WebcamAforgeImageAnalisys
                     };
 
                     chart1.Series.Clear();
+                    
+                    
                     for (int i = 0; i < series.Length; i++)
                     {
                         //chart1.Series.Add(series[i]);
                         //chart1.Series[series[i]].Points.AddXY(series[i], pontos[i]);
 
                         chart1.Series.Add(series[i]);
-                        chart1.Series[series[i]].ChartType = SeriesChartType.Column;
-                        chart1.Series[series[i]].Points.AddY(pontos[i]);
-                        //chart1.Series[series[i]].Points.AddY(34);
-                        chart1.Series[series[i]].ChartArea = "ChartArea1";
+                        
+                        //chart1.Series[series[i]].ChartType = SeriesChartType.Column;
+                        //chart1.Series[series[i]].AxisLabel[ = series[i];
+                        //chart1.Series[series[i]].Points.AddY(pontos[i]);
+                        
+                        chart1.Series[i].ChartType = SeriesChartType.Column;
+                        
+                        chart1.Series[i].AxisLabel = series[i];
+                        chart1.Series[i].Points.AddY(pontos[i]);
+
+                        chart1.Series[i].IsXValueIndexed = true;
+                        chart1.Series[i].Label = series[i];
+                        
+
+                        //chart1.Series[i].Points[i].AxisLabel = series[i];
+                        chart1.Series[i].ChartArea = "ChartArea1";
+                        //
 
                         //chart1.Series[series[i]].Legend = series[i];
                         //titles

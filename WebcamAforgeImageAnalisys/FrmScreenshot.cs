@@ -209,11 +209,6 @@ namespace WebcamAforgeImageAnalisys
                             //add to global list
                             retornoGoogle.Add(current);
                             //MessageBox.Show("Alegria:"+ face.JoyLikelihood.ToString(), "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-
-
-
-
                         }
                         mouse_busy(false);
                         MessageBox.Show("Imagem analisada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -240,10 +235,22 @@ namespace WebcamAforgeImageAnalisys
                 subscriptionKey = File.ReadAllText(@"C:\ApiKeys\WebcamAforgeAzure.txt");
                 //MakeAnalysisRequest(@".\detection.jpg").Wait();
 
+                //bool isok = await 
                 MakeRequest(@".\detection.jpg");
+                // MakeRequest(@".\detection.jpg");
+                //MessageBox.Show("Aguarde o processamento!", "Aguarde", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                mouse_busy(false);
+                btnExecute.Enabled = false;
+
+                System.Threading.Thread.Sleep(7000);
+                //while (!(retornoMicrosoft[0].faceRectangle.height>0))
+                //{
+
+                //}
                 MessageBox.Show("Imagem analisada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                btnExecute.Enabled = true;
+                mouse_busy(false);
 
                 try
                 {
@@ -326,75 +333,56 @@ namespace WebcamAforgeImageAnalisys
             return binaryReader.ReadBytes((int)fileStream.Length);
         }
 
-        static async void MakeRequest(string imageFilePath)//static async void MakeRequest(string imageFilePath)
+        private void EndedRequest()
         {
-            var client = new HttpClient();
+            btnExecute.Enabled = true;
+            mouse_busy(false);
+        }
 
-            // Request headers - replace this example key with your valid key.
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey); //
-
-            // NOTE: You must use the same region in your REST call as you used to obtain your subscription keys.
-            //   For example, if you obtained your subscription keys from westcentralus, replace "westus" in the
-            //   URI below with "westcentralus".
-            //string uri = "https://brazilsouth.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=gender,emotion";
-            HttpResponseMessage response;
-            string responseContent;
-
-            // Request body. Try this sample with a locally stored JPEG image.
-            byte[] byteData = GetImageAsByteArray(imageFilePath);
-
-            using (var content = new ByteArrayContent(byteData))
+        //static async void MakeRequest(string imageFilePath)//static async void MakeRequest(string imageFilePath)
+        static async void MakeRequest(string imageFilePath)
+        {
+            try
             {
-                // This example uses content type "application/octet-stream".
-                // The other content types you can use are "application/json" and "multipart/form-data".
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                response = await client.PostAsync(uri, content);//response = await client.PostAsync(uri, content);
-                //MessageBox.Show("StatusCode: " + response.StatusCode, "StatusCode HTTP Request" ,MessageBoxButtons.OK, MessageBoxIcon.Error);
-                responseContent = response.Content.ReadAsStringAsync().Result;
+                var client = new HttpClient();
+
+                // Request headers - replace this example key with your valid key.
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", subscriptionKey); //
+
+                // NOTE: You must use the same region in your REST call as you used to obtain your subscription keys.
+                //   For example, if you obtained your subscription keys from westcentralus, replace "westus" in the
+                //   URI below with "westcentralus".
+                //string uri = "https://brazilsouth.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=gender,emotion";
+                HttpResponseMessage response;
+                string responseContent;
+
+                // Request body. Try this sample with a locally stored JPEG image.
+                byte[] byteData = GetImageAsByteArray(imageFilePath);
+
+                using (var content = new ByteArrayContent(byteData))
+                {
+                    // This example uses content type "application/octet-stream".
+                    // The other content types you can use are "application/json" and "multipart/form-data".
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                    response = await client.PostAsync(uri, content);//response = await client.PostAsync(uri, content);
+                                                                    //MessageBox.Show("StatusCode: " + response.StatusCode, "StatusCode HTTP Request" ,MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    responseContent = response.Content.ReadAsStringAsync().Result;
+                    //MessageBox.Show("Response: \n" + responseContent, "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.IO.File.WriteAllText(@"d:\Desktop\responsecontentALLText.txt", responseContent);
+
+                }
                 //MessageBox.Show("Response: \n" + responseContent, "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                System.IO.File.WriteAllText(@"d:\Desktop\responsecontentALLText.txt", responseContent);
-
+                retornoMicrosoft = JsonConvert.DeserializeObject<List<ResponseMicrosoftAzure>>(responseContent);
+                //MessageBox.Show("Response: \n" + retornoMicrosoft.ToString(), "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //return true;
+                
             }
-            //MessageBox.Show("Response: \n" + responseContent, "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            retornoMicrosoft = JsonConvert.DeserializeObject<List<ResponseMicrosoftAzure>>(responseContent);
-            //MessageBox.Show("Response: \n" + retornoMicrosoft.ToString(), "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return true;
-
-
-
-
-
-            // A peek at the raw JSON response.
-            //Console.WriteLine(responseContent);
-            // Processing the JSON into manageable objects.
-            //JToken rootToken = JArray.Parse(responseContent).First;
-            //JToken rootToken = JObject.Parse(responseContent).First;
-
-            // First token is always the faceRectangle identified by the API.
-            //JToken faceRectangleToken = rootToken.First;
-
-            // Second token is all emotion scores.
-            //JToken scoresToken = rootToken.Last;
-
-            // Show all face rectangle dimensions
-            //int count = 0;
-            //JEnumerable<JToken> faceRectangleSizeList = faceRectangleToken.First.Children();
-            //foreach (var size in faceRectangleSizeList)
-            //{
-            //    count++;
-            //    MessageBox.Show($"Size{count}: {size}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //    Console.WriteLine(size);
-            //}
-
-            //// Show all scores
-            //count = 0;
-            //JEnumerable<JToken> scoreList = scoresToken.First.Children();
-            //foreach (var score in scoreList)
-            //{
-            //    count++;
-            //    MessageBox.Show($"Score{count}: {score}", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //    Console.WriteLine(score);
-            //}
+            catch (Exception e)
+            {
+                //return false;
+                //throw;
+            }
+            
         }
 
 
@@ -479,7 +467,7 @@ namespace WebcamAforgeImageAnalisys
                 {
                     if (mousePoint.Y >= r.faceRectangle.top && mousePoint.Y <= (r.faceRectangle.top + r.faceRectangle.height))
                     {
-                        MessageBox.Show("clicou na caixa", "Sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        //MessageBox.Show("clicou na caixa", "Sucesso!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         FrmGraph frmGraph = new FrmGraph(retornoMicrosoft, screenshot);
                         //frmGraph.Modal = true;
                         frmGraph.ShowDialog();
@@ -563,14 +551,24 @@ namespace WebcamAforgeImageAnalisys
             //pbScreenshot.Location = new Point((FrmScreenshot.ActiveForm.Width - pbScreenshot.Size.Width) / 2, pbScreenshot.Location.Y);
         }
 
-        private void btnImageFromFile_Click(object sender, EventArgs e)
+        private void pbScreenshot_Click(object sender, EventArgs e)
         {
-            this.Close();
-            //this.Dispose();
-            frmcam.Show();
+
         }
 
-        
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Deseja realmente sair?", "Sair?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            {
+                Environment.Exit(0);
+            }
+
+            //this.Close();
+            //this.Dispose();
+            //frmcam.Show();
+        }
+
+
     }
 
     public class ResponseGoogle

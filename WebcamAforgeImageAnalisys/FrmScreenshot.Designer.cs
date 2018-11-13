@@ -57,6 +57,7 @@
             this.pbScreenshot.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbScreenshot.TabIndex = 0;
             this.pbScreenshot.TabStop = false;
+            this.pbScreenshot.Click += new System.EventHandler(this.pbScreenshot_Click);
             this.pbScreenshot.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pbScreenshot_MouseClick);
             // 
             // btnExecute
@@ -152,7 +153,6 @@
             this.button1.TabIndex = 4;
             this.button1.Text = "Voltar";
             this.button1.UseVisualStyleBackColor = false;
-            //this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnImageFromFile
             // 
@@ -165,7 +165,7 @@
             this.btnImageFromFile.TabIndex = 5;
             this.btnImageFromFile.Text = "Sair";
             this.btnImageFromFile.UseVisualStyleBackColor = false;
-            this.btnImageFromFile.Click += new System.EventHandler(this.btnImageFromFile_Click);
+            this.btnImageFromFile.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // txtInformation
             // 
