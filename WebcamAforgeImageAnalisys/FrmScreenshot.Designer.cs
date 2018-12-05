@@ -36,8 +36,8 @@
             this.rbMicrosoftAnalisys = new System.Windows.Forms.RadioButton();
             this.rbGoogleAnalisys = new System.Windows.Forms.RadioButton();
             this.pbSelectedOption = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.btnImageFromFile = new System.Windows.Forms.Button();
+            this.btnBack = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
             this.txtInformation = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbScreenshot)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -142,30 +142,31 @@
             this.pbSelectedOption.TabIndex = 3;
             this.pbSelectedOption.TabStop = false;
             // 
-            // button1
+            // btnBack
             // 
-            this.button1.BackColor = System.Drawing.Color.Orange;
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(721, 545);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(147, 35);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Voltar";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btnBack.BackColor = System.Drawing.Color.Orange;
+            this.btnBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBack.Location = new System.Drawing.Point(721, 545);
+            this.btnBack.Margin = new System.Windows.Forms.Padding(4);
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(147, 35);
+            this.btnBack.TabIndex = 4;
+            this.btnBack.Text = "Voltar";
+            this.btnBack.UseVisualStyleBackColor = false;
+            this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
             // 
-            // btnImageFromFile
+            // btnExit
             // 
-            this.btnImageFromFile.BackColor = System.Drawing.Color.Red;
-            this.btnImageFromFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnImageFromFile.Location = new System.Drawing.Point(721, 586);
-            this.btnImageFromFile.Margin = new System.Windows.Forms.Padding(4);
-            this.btnImageFromFile.Name = "btnImageFromFile";
-            this.btnImageFromFile.Size = new System.Drawing.Size(147, 35);
-            this.btnImageFromFile.TabIndex = 5;
-            this.btnImageFromFile.Text = "Sair";
-            this.btnImageFromFile.UseVisualStyleBackColor = false;
-            this.btnImageFromFile.Click += new System.EventHandler(this.btnExit_Click);
+            this.btnExit.BackColor = System.Drawing.Color.Red;
+            this.btnExit.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExit.Location = new System.Drawing.Point(721, 586);
+            this.btnExit.Margin = new System.Windows.Forms.Padding(4);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(147, 35);
+            this.btnExit.TabIndex = 5;
+            this.btnExit.Text = "Sair";
+            this.btnExit.UseVisualStyleBackColor = false;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // txtInformation
             // 
@@ -183,8 +184,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(885, 706);
             this.Controls.Add(this.txtInformation);
-            this.Controls.Add(this.btnImageFromFile);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnExit);
+            this.Controls.Add(this.btnBack);
             this.Controls.Add(this.pbSelectedOption);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnExecute);
@@ -218,8 +219,8 @@
         private System.Windows.Forms.RadioButton rbMicrosoftAnalisys;
         private System.Windows.Forms.RadioButton rbGoogleAnalisys;
         private System.Windows.Forms.PictureBox pbSelectedOption;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button btnImageFromFile;
+        private System.Windows.Forms.Button btnBack;
+        private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.TextBox txtInformation;
     }
 }

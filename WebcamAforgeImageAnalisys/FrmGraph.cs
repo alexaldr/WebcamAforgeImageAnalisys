@@ -67,7 +67,7 @@ namespace WebcamAforgeImageAnalisys
                     lblDetails.Text = "Gênero: " + gender +
                                       "\nIdade aproximada: " + Math.Round(r.faceAttributes.age);
 
-                    string[] series =
+                    string[] serie =
                     {
                         "Raiva",
                         "Desprezo",
@@ -91,40 +91,49 @@ namespace WebcamAforgeImageAnalisys
                         r.faceAttributes.emotion.surprise*100
                     };
 
+                    
                     chart1.Series.Clear();
                     
                     
-                    for (int i = 0; i < series.Length; i++)
+                    for (int i = 0; i < serie.Length; i++)
                     {
-                        //chart1.Series.Add(series[i]);
-                        //chart1.Series[series[i]].Points.AddXY(series[i], pontos[i]);
-
-                        chart1.Series.Add(series[i]);
                         
+
+                        chart1.Series.Add(serie[i]);
+                        chart1.Series[serie[i]].Points.Clear();
+                        chart1.Series[serie[i]].AxisLabel = (i + 1).ToString();
+                        chart1.Series[serie[i]].Points.AddY(pontos[i]);
+                        //chart1.Series[serie[i]].Points.AddY(pontos[i]);
+                        //chart1.Series[serie[i]].Points.AddY(pontos[i]);
+                        //chart1.Series[serie[i]].Points.AddY(pontos[i]);
+                        //chart1.Series[serie[i]].Points.AddY(pontos[i]);
+
+
+                        chart1.Series[serie[i].ToString()].IsXValueIndexed = true;
+                        //chart1.Series[series[i]].ChartArea = "ChartArea1";
+
+
                         //chart1.Series[series[i]].ChartType = SeriesChartType.Column;
-                        //chart1.Series[series[i]].AxisLabel[ = series[i];
-                        //chart1.Series[series[i]].Points.AddY(pontos[i]);
-                        
-                        chart1.Series[i].ChartType = SeriesChartType.Column;
-                        
-                        chart1.Series[i].AxisLabel = series[i];
-                        chart1.Series[i].Points.AddY(pontos[i]);
 
-                        chart1.Series[i].IsXValueIndexed = true;
-                        chart1.Series[i].Label = series[i];
+                        //chart1.Series[i].Points.AddY(pontos[i]);
+
+
+                        //chart1.Series[series[i]].LabelAngle = 45;
+
+
+                        //chart1.Series[i].Label = series[i];
+                        //chart1.Series[series[i]].SetCustomProperty("PixelPointWidth", "10");
+                        //chart1.Series[series[i]].SetCustomProperty("PointWidth", "10");
+
+                       // chart1.AlignDataPointsByAxisLabel();
                         
 
                         //chart1.Series[i].Points[i].AxisLabel = series[i];
-                        chart1.Series[i].ChartArea = "ChartArea1";
+                        //chart1.Series[i].ChartArea = "ChartArea1";
                         //
-
-                        //chart1.Series[series[i]].Legend = series[i];
-                        //titles
-                        //Series serie = chart1.Series.Add(series[i]);
-                        ////values
-                        //serie.Label = pontos[i].ToString();
-                        //serie.Points.Add(pontos[i]);
-                        //chart1.Series.add
+                        chart1.Update();
+                        //MessageBox.Show($"{chart1.Series.Count}", "Count!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
                     }
 
 

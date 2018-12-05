@@ -178,6 +178,9 @@ namespace WebcamAforgeImageAnalisys
                         imgsave = new Bitmap(Image.FromFile(openFileDialog.FileName));
 
                         //}
+                        this.Hide();
+                        FrmScreenshot frmScreenshot = new FrmScreenshot(imgsave, this);
+                        frmScreenshot.Show();
                     }
                     catch (Exception ex)
                     {
@@ -192,9 +195,7 @@ namespace WebcamAforgeImageAnalisys
                     MessageBox.Show("Operação cancelada!", "Cancelado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-            this.Hide();
-            FrmScreenshot frmScreenshot = new FrmScreenshot(imgsave, this);
-            frmScreenshot.Show();
+            
         }
     }
 }

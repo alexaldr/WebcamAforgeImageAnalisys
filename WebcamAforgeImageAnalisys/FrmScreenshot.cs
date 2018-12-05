@@ -238,16 +238,16 @@ namespace WebcamAforgeImageAnalisys
                 //bool isok = await 
                 MakeRequest(@".\detection.jpg");
                 // MakeRequest(@".\detection.jpg");
-                //MessageBox.Show("Aguarde o processamento!", "Aguarde", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Aguarde o processamento!", "Aguarde", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 btnExecute.Enabled = false;
 
-                System.Threading.Thread.Sleep(7000);
+                //System.Threading.Thread.Sleep(7000);
                 //while (!(retornoMicrosoft[0].faceRectangle.height>0))
                 //{
 
                 //}
-                MessageBox.Show("Imagem analisada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Imagem analisada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 btnExecute.Enabled = true;
                 mouse_busy(false);
@@ -373,7 +373,7 @@ namespace WebcamAforgeImageAnalisys
                 }
                 //MessageBox.Show("Response: \n" + responseContent, "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 retornoMicrosoft = JsonConvert.DeserializeObject<List<ResponseMicrosoftAzure>>(responseContent);
-                //MessageBox.Show("Response: \n" + retornoMicrosoft.ToString(), "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Response: \n" + retornoMicrosoft[0].faceId, "Response", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //return true;
                 
             }
@@ -554,6 +554,12 @@ namespace WebcamAforgeImageAnalisys
         private void pbScreenshot_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            this.Dispose();
+            frmcam.Show();
         }
 
         private void btnExit_Click(object sender, EventArgs e)
